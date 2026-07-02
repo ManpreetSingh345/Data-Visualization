@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlassVibe // Advanced Data Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.mini.min.js"></script>
+</head>
+<body>
+    <div class="background-decorations" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-container">
+        <aside class="sidebar glass">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-chart-pie logo-icon"></i>
+                    <h1>Glass<span>Vibe</span></h1>
+                </div>
+                <button id="themeToggle" class="theme-btn glass" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-sun icon-sun"></i>
+                    <i class="fa-solid fa-moon icon-moon"></i>
+                </button>
+            </div>
+
+            <hr class="divider">
+
+            <div class="upload-section">
+                <h2>Import Data</h2>
+                <div id="dropZone" class="drop-zone glass">
+                    <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                    <p>Drag & drop Excel file here</p>
+                    <span>or</span>
+                    <label for="fileInput" class="file-label btn-primary">Browse Files</label>
+                    <input type="file" id="fileInput" accept=".xlsx, .xls" hidden>
+                </div>
+                <div id="fileInfo" class="file-info hidden glass">
+                    <i class="fa-solid fa-file-excel excel-icon"></i>
+                    <div class="file-details">
+                        <span id="fileName" class="file-name">filename.xlsx</span>
+                        <span id="fileSize" class="file-size">0 KB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sheetSelectorContainer" class="sheet-selector-container hidden">
+                <label for="sheetSelect"><i class="fa-solid fa-layer-group"></i> Active Sheet</label>
+                <div class="select-wrapper glass">
+                    <select id="sheetSelect"></select>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <section id="emptyState" class="empty-state glass">
+                <i class="fa-solid fa-wand-magic-sparkles magic-icon"></i>
+                <h2>Ready to visualize your data?</h2>
+                <p>Upload a Microsoft Excel spreadsheet file (.xlsx or .xls) in the sidebar to automatically extract data intelligence, compute KPIs, and build interactive charts.</p>
+            </section>
+
+            <div id="dashboardContent" class="dashboard-content hidden">
+                <section class="kpi-grid" aria-label="Key Performance Indicators">
+                    <div class="card kpi-card glass">
+                        <div class="kpi-icon-wrapper geo"><i class="fa-solid fa-table-rows"></i></div>
+                        <div class="kpi-data">
+                            <span class="kpi-label">Total Rows</span>
+                            <span id="kpiRows" class="kpi-value">-</span>
+                        </div>
+                    </div>
+                    <div class="card kpi-card glass">
+                        <div class="kpi-icon-wrapper columns"><i class="fa-solid fa-table-columns"></i></div>
+                        <div class="kpi-data">
+                            <span class="kpi-label">Total Columns</span>
+                            <span id="kpiCols" class="kpi-value">-</span>
+                        </div>
+                    </div>
+                    <div class="card kpi-card glass">
+                        <div class="kpi-icon-wrapper sum"><i class="fa-solid fa-calculator"></i></div>
+                        <div class="kpi-data">
+                            <span id="kpiMetricLabel1" class="kpi-label">Metric Summary</span>
+                            <span id="kpiMetricValue1" class="kpi-value">-</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="charts-grid" aria-label="Data Visualizations">
+                    <div class="card chart-card glass">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-bar"></i> Distribution Analysis</h3>
+                            <div class="chart-controls">
+                                <div class="control-group">
+                                    <label>X-Axis</label>
+                                    <select id="barXSelect" class="glass-select"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label>Y-Axis</label>
+                                    <select id="barYSelect" class="glass-select"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-card glass">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-line"></i> Trend Analysis</h3>
+                            <div class="chart-controls">
+                                <div class="control-group">
+                                    <label>X-Axis</label>
+                                    <select id="lineXSelect" class="glass-select"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label>Y-Axis</label>
+                                    <select id="lineYSelect" class="glass-select"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card chart-card glass unique-row">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-pie"></i> Proportional Share</h3>
+                            <div class="chart-controls">
+                                <div class="control-group">
+                                    <label>Labels</label>
+                                    <select id="pieXSelect" class="glass-select"></select>
+                                </div>
+                                <div class="control-group">
+                                    <label>Values</label>
+                                    <select id="pieYSelect" class="glass-select"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper structural-pie">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
